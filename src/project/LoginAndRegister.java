@@ -83,14 +83,31 @@ public class LoginAndRegister {
     static void register(Scanner sc) throws SQLException
     {
     	boolean userCorrect=false;
+    	String name = null;
     	while(!userCorrect)
     	{
-        System.out.println("enter user name");
-        final String name = sc.nextLine();
-        boolean usernameExists =checkUsernameExistsInDatabase(name);
-        if (usernameExists) {
+    		boolean valid=false;
+    		while(!valid)
+    		{
+    			System.out.println("enter user name");
+    	         name = sc.nextLine();
+    	         if(InvalidExceptions.isValidName(name))
+    	         {
+    	        	 valid=true;
+    	         }
+    	         else
+    	         {
+    	        	 System.out.println("invalid username makesure start with letters only !!");
+    	         }
+    		}
+    		boolean usernameExists =checkUsernameExistsInDatabase(name);
+        if (usernameExists) 
+        {
             System.out.println("Username already exists in the database.");
-        } else {
+        } 
+        else
+        {
+        	
             System.out.println("Enter user emailId");
             final String emailId = sc.nextLine();
             System.out.println("Enter the password");
@@ -132,18 +149,23 @@ public class LoginAndRegister {
 			}
 }
     static boolean checkUsernameExistsInDatabase(String username) throws SQLException {
-	    try (
-	        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/klaus_project", "root", "");
-	        PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM userdetails WHERE name = ?");
-	    ) {
-	        stmt.setString(1, username);
-	        try (ResultSet resultSet = stmt.executeQuery())
-	        {
-	            resultSet.next();
-	            int count = resultSet.getInt(1);
-	            return count > 0;
-	        }
-	    }
+    	try {
+    	    Class.forName("com.mysql.cj.jdbc.Driver");
+    	    Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/klaus_project", "root", "");
+    	    PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM userdetails WHERE name = ?");
+    	    stmt.setString(1, username);
+    	    try (ResultSet resultSet = stmt.executeQuery()) {
+    	        resultSet.next();
+    	        int count = resultSet.getInt(1);
+    	        return count > 0;
+    	    }
+    	} catch(Exception e) {
+    	    
+    	    e.printStackTrace();
+    	    
+    	}
+    	return false;
+
 	}
     public static boolean loginCheck(String name,String pwd)
 	{
