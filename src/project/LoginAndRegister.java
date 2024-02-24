@@ -48,7 +48,6 @@ public class LoginAndRegister {
 		{
     	try
 		{
-		
 		System.out.println("enter user name");
 		final String name=sc.nextLine();
 		System.out.println("enter the password");
