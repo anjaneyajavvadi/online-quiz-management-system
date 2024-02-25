@@ -14,34 +14,38 @@ import java.util.InputMismatchException;
 public class LoginAndRegister {
 
 	public static void main(String s[]) throws SQLException {
-        int ch;
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WELCOME TO THE ONLINE QUIZ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-        Scanner sc = new Scanner(System.in);
-        while (true){
-            
-            System.out.println("choose\n1.Login\n2.Register\n3.exit");
-            try {
-                ch = sc.nextInt();
-                sc.nextLine();
-                switch (ch) {
-                    case 1:
-                        login(sc);
-                        break;
-                    case 2:
-                        register(sc);
-                        break;
-                    case 3:
-                        System.out.println("closing have a nice day !!");
-                        sc.close();
-                        System.exit(0);
-                        default:
-                        	System.out.println("Invalid Choice !!");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Input Error: Please enter numeric values");
-            }
-        }
-    }
+	    int ch;
+	    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WELCOME TO THE ONLINE QUIZ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	    Scanner sc = new Scanner(System.in);
+	    
+	    boolean running = true;
+	    while (running) {
+	        System.out.println("choose\n1.Login\n2.Register\n3.exit");
+	        try {
+	            ch = sc.nextInt();
+	            sc.nextLine();
+	            switch (ch) {
+	                case 1:
+	                    login(sc);
+	                    break;
+	                case 2:
+	                    register(sc);
+	                    break;
+	                case 3:
+	                    System.out.println("closing have a nice day !!");
+	                    running = false; // Set running to false to exit the loop
+	                    break;
+	                default:
+	                    System.out.println("Invalid Choice !!");
+	            }
+	        } catch (InputMismatchException e) {
+	            System.out.println("Input Error: Please enter numeric values");
+	            sc.nextLine(); // Clear the invalid input from the scanner
+	        }
+	    }
+	    sc.close(); // Close the scanner when the program exits
+	}
+
     static void login(Scanner sc)
     {
     	while(true)
@@ -49,12 +53,12 @@ public class LoginAndRegister {
     	try
 		{
 		System.out.println("enter user name");
-		final String name=sc.nextLine();
+		final String name=sc.next();
 		System.out.println("enter the password");
 		final String password=sc.next();
 		if(loginCheck(name, password))
 		{
-			System.out.println("welcome User "+name+" !!");
+			System.out.println("welcome "+name+" !!");
 			System.out.println();
 			Quiz.quiz(name);
 			System.out.println("logged out !! have a nice day");
@@ -62,7 +66,7 @@ public class LoginAndRegister {
 		}
 		else if(adminLoginCheck(name,password))
 		{
-			System.out.println("welcome Admin "+name+" !!");
+			System.out.println("welcome "+name+" !!");
 			System.out.println();
 			AdminFunctions.adminFuncs();
 			System.out.println("logged out !! have a nice day");
@@ -72,6 +76,7 @@ public class LoginAndRegister {
 		else
 		{
 			System.out.println("login falied!! check your username and password");
+			break;
 		}
 		}
 		catch(InputMismatchException e)
@@ -94,25 +99,50 @@ public class LoginAndRegister {
     	         if(InvalidExceptions.isValidName(name))
     	         {
     	        	 valid=true;
-    	        	 int num=5;
     	         }
     	         else
     	         {
-    	        	 System.out.println("invalid username makesure start with letters only !!");
+    	        	 System.out.println("invalid username !!");
     	         }
     		}
     		boolean usernameExists =checkUsernameExistsInDatabase(name);
         if (usernameExists) 
         {
-            System.out.println("Username already exists in the database.");
+            System.out.println("Username already exists in the database... choose another one!!");
         } 
         else
         {
         	
             System.out.println("Enter user emailId");
-            final String emailId = sc.nextLine();
+            valid=false;
+            String emailId="";
+            while(!valid)
+            {
+            emailId = sc.nextLine();
+            if(InvalidExceptions.isValidMail(emailId))
+            {
+            	valid=true;
+            }
+            else
+            {
+            	System.out.println("invalid email Id !! please enter valid mail id...");
+            }
+            }
+            valid=false;
+            String password="";
+            while(!valid)
+            {
             System.out.println("Enter the password");
-            final String password = sc.nextLine();
+            password= sc.nextLine();
+            if(InvalidExceptions.isValidPassword(password))
+            {
+            	valid=true;
+            }
+            else
+            {
+            	System.out.println("The password does not meet the specified conditions... retype again");
+            }
+            }
             registration(name, emailId, password);
             userCorrect=true;
             try {
