@@ -94,6 +94,7 @@ public class LoginAndRegister {
     	         if(InvalidExceptions.isValidName(name))
     	         {
     	        	 valid=true;
+    	        	 int num=5;
     	         }
     	         else
     	         {
